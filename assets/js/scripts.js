@@ -2,8 +2,13 @@ const cards = document.querySelectorAll('.card');
 let hasFlippedCard = false;
 let firstCard, secondCard;
 let lockBoard = false;
-let message = document.getElementById('win');
-let restart = document.getElementById('restart');
+const message = document.getElementById('win');
+const restart = document.getElementById('restart');
+
+(function (){
+    suffle();
+    addClick();
+})();
 
 function flipCard(){
     if(lockBoard) return;
@@ -53,13 +58,6 @@ function resetBoard(){
     [firstCard, secondCard] = [null, null];
 }
 
-(function suffle(){
-    cards.forEach((card) => {
-        let randomPosition = Math.floor(Math.random() * 12);
-        card.style.order = randomPosition;
-    });
-})();
-
 function isOver(){
     let cardsFlipped = 0;
     cards.forEach((card) => {
@@ -73,25 +71,30 @@ function isOver(){
 }
 
 function unflipAllCards(){
+    restart.classList.add('fa-spin');
     setTimeout(() => {
         cards.forEach((card) => {
             card.classList.remove('flip');
-        })
-        message.style.visibility = "hidden";
-        restart.style.visibility = "hidden";
-        cards.forEach((card) => {
-            card.addEventListener('click', flipCard);
             card.style.cursor = "pointer";
         })
-
         resetBoard();
-        cards.forEach((card) => {
-            let randomPosition = Math.floor(Math.random() * 12);
-            card.style.order = randomPosition;
-        });
+        message.style.visibility = "hidden";
+        restart.style.visibility = "hidden";
+        restart.classList.remove('fa-spin');   
+        suffle();
+        addClick();
     }, 1500);
 }
 
-cards.forEach((card) => {
-    card.addEventListener('click', flipCard);
-})
+function suffle(){
+    cards.forEach((card) => {
+        let randomPosition = Math.floor(Math.random() * 12);
+        card.style.order = randomPosition;
+    });
+}
+
+function addClick(){
+    cards.forEach((card) => {
+        card.addEventListener('click', flipCard);
+    })
+}
